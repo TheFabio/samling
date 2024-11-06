@@ -41,7 +41,7 @@ jobs:
       - name: Install NodeJs
         uses: actions/setup-node@v4
         with:
-          node-version: {{ env.nodejs-version }}
+          node-version: ${{ env.nodejs-version }}
       - name: Cache node_modules
         uses: actions/cache@v4
         with:
@@ -64,7 +64,7 @@ jobs:
       - name: build app
         run: |
           npm run create-folders
-          npm run setup-dist --hosting-url='{{ vars.STATIC_APP_URL }}'
+          npm run setup-dist --hosting-url='${{ vars.STATIC_APP_URL }}'
           npm run build-forge-bundle
           npm run build-bundle
           npm run set-local
