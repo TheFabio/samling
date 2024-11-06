@@ -1,4 +1,4 @@
-<div align="center"><img src="/public/images/logos-scorpion.svg" height="128" /></div>
+<div align="center"><img src="/src/saml/images/logos-scorpion.svg" height="128" /></div>
 
 Samling
 ===
@@ -7,7 +7,7 @@ Serverless (as in "client side only") SAML IDP for testing SAML integrations.
 
 ## See it Live
 
-Visit https://fujifish.github.io/samling/samling.html to see it in action.
+Visit [the live website][1] to see it in action.
 
 ## What is SAMLING
 
@@ -36,18 +36,6 @@ npm run build
 ```
 
 You'll end up with a `public` directory with all the required assets for loading `samling.html`.
-
-## Docker
-
-Note: Docker 17.05 or higher is required.
-
-```bash
-git clone https://github.com/fujifish/samling.git
-cd samling
-docker build -t fujifish/samling .
-docker run -d -p 8080:80 fujifish/samling
-```
-You can now access samling at http://localhost:8080
 
 ## How to Use
 
@@ -100,3 +88,5 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+
+[1]:  https://samling.limacorpconsultants.com

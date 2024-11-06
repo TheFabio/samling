@@ -1,15 +1,13 @@
 {
   "name": "samling",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Serverless SAML testing",
-  "author": "fujifischer <fujifischer@gmail.com>",
-  "maintainers": [
-    "Nadav Fischer <fujifischer@gmail.com>"
-  ],
-  "homepage": "http://github.com/fujifish/samling",
+  "author": "The Fabio",
+  "homepage": "https://github.com/TheFabio/samling",
+  "type": "module",
   "repository": {
     "type": "git",
-    "url": "http://github.com/fujifish/samling.git"
+    "url": "https://github.com/TheFabio/samling.git"
   },
   "bugs": {
     "url": "https://github.com/fujifish/samling/issues"
@@ -20,27 +18,28 @@
     "idp",
     "testing"
   ],
-  "devDependencies": {
+  "dependencies": {
     "bootstrap": "3.4.1",
+    "clipboard-js": "^0.2.0",
+    "jquery": "2.2.4"
+  },
+  "devDependencies": {
     "brfs": "1.4.3",
     "browserify": "13.0.1",
-    "clipboard-js": "^0.2.0",
     "http-server": "^14.1.1",
-    "jquery": "2.2.4",
     "node-forge": "0.6.40",
     "xml-crypto": "1.4.0",
     "xmldom": "^0.6.0"
   },
-  "main": "samling.js",
   "scripts": {
-    "prepare": "mkdir -p public/js",
-    "bootstrap": "cp -r node_modules/bootstrap/dist/* public/",
-    "jquery": "cp -r node_modules/jquery/dist/* public/js/",
-    "forge": "cd node_modules/node-forge && npm install && npm run bundle && cp js/forge.bundle.js ../../public",
-    "browser": "browserify -g brfs samling.js | sed \"s/require[(]'node-forge'[)]/window.forge/g\" > public/bundle.js",
-    "build": "npm run prepare && npm run bootstrap && npm run jquery && npm run forge && npm run browser && npm run adjust-url",
-    "adjust-url": "node base-file-url-replacement",
-    "serve": "http-server -p 8888 ./public -o samling.html"
+    "create-folders": "node src/build/build-dist-folders.js",
+    "build-forge-bundle": "cd .tmp/node-forge && npm install && npm run bundle && cp js/forge.bundle.js ../../dist/js",
+    "build-bundle": "browserify -g brfs src/saml/samling.js > dist/js/bundle.js",
+    "setup-dist": "node src/build/setup-dist-environment",
+    "set-local": "npm run setup-dist --hosting-url='http://localhost:8888'",
+    "add-file-hashes": "node src/build/add-hash-to-filenames.js",
+    "build-local": "npm run create-folders && npm run set-local && npm run build-forge-bundle && npm run build-bundle && npm run set-local && npm run add-file-hashes",
+    "serve": "npm run build-local && http-server -p 8888 ./dist -o /"
   },
   "license": "MIT"
 }
