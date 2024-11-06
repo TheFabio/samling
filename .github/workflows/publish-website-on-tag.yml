@@ -50,8 +50,11 @@ jobs:
       - name: Install node_modules
         run: npm install
   build_app:
-    name: Build static app
+    name: Build And Deploy static app
     runs-on: ubuntu-latest
+    environment: # this sets the github environment name to retrieve the variable values
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     needs: check_requirements
     steps:
       - name: Checkout code
@@ -74,3 +77,8 @@ jobs:
         with:
           name: ${{ env.static-app-artefact-name }}
           path: dist
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
+        with:
+          artifact_name: ${{ env.static-app-artefact-name }}
