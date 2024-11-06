@@ -33,11 +33,13 @@
   },
   "scripts": {
     "create-folders": "node src/build/build-dist-folders.js",
-    "build-forge-bundle": "cd .tmp/node-forge && npm install && npm run bundle && cp js/forge.bundle.js ../../dist",
-    "build-bundle": "browserify -g brfs src/saml/samling.js > dist/bundle.js",
+    "build-forge-bundle": "cd .tmp/node-forge && npm install && npm run bundle && cp js/forge.bundle.js ../../dist/js",
+    "build-bundle": "browserify -g brfs src/saml/samling.js > dist/js/bundle.js",
     "setup-dist": "node src/build/setup-dist-environment",
     "set-local": "npm run setup-dist --hosting-url='http://localhost:8888'",
-    "serve": "npm run create-folders && npm run set-local && npm run build-forge-bundle && npm run build-bundle && npm run set-local && http-server -p 8888 ./dist -o /"
+    "add-file-hashes": "node src/build/add-hash-to-filenames.js",
+    "build-local": "npm run create-folders && npm run set-local && npm run build-forge-bundle && npm run build-bundle && npm run set-local && npm run add-file-hashes",
+    "serve": "npm run build-local && http-server -p 8888 ./dist -o /"
   },
   "license": "MIT"
 }
