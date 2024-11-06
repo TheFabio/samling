@@ -29,36 +29,36 @@ subsequent SAML responses.
 ## Installation
 
 ```bash
-git clone https://github.com/fujifish/samling.git
+git clone https://github.com/TheFabio/samling.git
 cd samling
 npm install
 npm run build
 ```
 
-You'll end up with a `public` directory with all the required assets for loading `samling.html`.
+You'll end up with a `dist` directory with all the required assets
 
 ## How to Use
 
 ### SAMLRequest with AuthnRequest
 
-Use `https://fujifish.github.io/samling/samling.html?SAMLRequest=<SAML_REQUEST>` to initiate a login request via samling.
+Use `https://thefabio.github.io/samling/?SAMLRequest=<SAML_REQUEST>` to initiate a login request via samling.
 Specifying `ForceAuthn="true"` in the request will force Samling to land on the properties page instead of auto submitting the SAML response
 in case the user is already logged-in.
 
 ### SAMLRequest with LogoutRequest
 
-Use `https://fujifish.github.io/samling/samling.html?SAMLRequest=<SAML_REQUEST>` to initiate a logout request.
+Use `https://thefabio.github.io/samling/?SAMLRequest=<SAML_REQUEST>` to initiate a logout request.
 If there is an active user session, the SAML Response will be automatically posted back.
 
 Add `manual=1` query parameters to the url to logout manually instead of the response being automatically posted back.
 
 ### IdP Metadata
 
-Use `https://fujifish.github.io/samling/public/metadata.xml` to obtain the _default_ IdP metadata of Samling. Note that the downloadable metadata contains the default public certificate of samling - it is not suitable for generated keys. If you generate a new key pair you can obtain the metadata with the correct certificate from the "IdP Metadata" view.
+Use `https://thefabio.github.io/samling/metadata.xml` to obtain the _default_ IdP metadata of Samling. Note that the downloadable metadata contains the default public certificate of samling - it is not suitable for generated keys. If you generate a new key pair you can obtain the metadata with the correct certificate from the "IdP Metadata" view.
 
 ### Manual Usage
 
-1. Open up `https://fujifish.github.io/samling/samling.html`. You'll land on the **SAML Response Properties** section.
+1. Open up [the live website][1]. You'll land on the **SAML Response Properties** section.
 2. Fill in the required properties fields. Required fields are marked with an asterisks (*).
    * `Name Identifier` - the user name
    * `Assertion Consumer URL` - where to send the SAML response
@@ -89,4 +89,4 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
-[1]:  https://samling.limacorpconsultants.com
+[1]:  https://thefabio.github.io/samling/
