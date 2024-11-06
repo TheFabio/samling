@@ -1,0 +1,76 @@
+name: Deploy Azure Environment Production
+run-name: 'Deploy to Githubpages ${{ github.ref_name }} by @${{ github.actor }}'
+on:
+  push:
+    tags:
+      - 'release-*'
+env:
+  static-app-artefact-name: static-app-files
+  nodejs-version: '20.10'
+  base-folder: src/saml
+  dist-folder: dist
+concurrency:
+  group: deploy-github-pages-${{ github.workflow }}
+  cancel-in-progress: false
+jobs:
+  check_requirements:
+    name: Check requirements
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check Version Format in Tag
+        id: version-check
+        uses: nowsprinting/check-version-format-action@v4.0.2
+        with:
+          prefix: "release-"
+      - name: Get github tag
+        id: tag-name
+        shell: bash
+        run: echo "TAGNAME=${GITHUB_REF#refs/tags/}" >> $GITHUB_OUTPUT
+      - name: Check Results
+        shell: bash
+        run: |
+          echo Tag: ${{steps.tag-name.outputs.TAGNAME}}, is_valid: ${{ steps.version-check.outputs.is_valid }}, is_stable: ${{ steps.version-check.outputs.is_stable }}
+      - name: Invalid Tag Version Detected
+        if: steps.version-check.outputs.is_valid != 'true'
+        shell: bash
+        run: |
+          echo Invalid Version ${{steps.tag-name.outputs.TAGNAME}}
+          exit 1
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Install NodeJs
+        uses: actions/setup-node@v4
+        with:
+          node-version: {{ env.nodejs-version }}
+      - name: Cache node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ env.nodejs-version }}-node_modules-${{ hashFiles('package-lock.json') }}
+      - name: Install node_modules
+        run: npm install
+  build_app:
+    name: Build static app
+    runs-on: ubuntu-latest
+    needs: check_requirements
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Get Cached node_modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ env.nodejs-version }}-node_modules-${{ hashFiles('package-lock.json') }}
+      - name: build app
+        run: |
+          npm run create-folders
+          npm run setup-dist --hosting-url='{{ vars.STATIC_APP_URL }}'
+          npm run build-forge-bundle
+          npm run build-bundle
+          npm run set-local
+          npm run add-file-hashes
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.static-app-artefact-name }}
+          path: dist
