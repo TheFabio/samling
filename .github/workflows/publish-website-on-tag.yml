@@ -76,12 +76,9 @@ jobs:
           npm run set-local
           npm run add-file-hashes
       - name: Upload artifact for deployment job
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-pages-artifact@v3
         with:
-          name: ${{ env.static-app-artefact-name }}
           path: dist
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
-        with:
-          artifact_name: ${{ env.static-app-artefact-name }}
