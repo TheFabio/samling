@@ -74,9 +74,9 @@ exports.parseRequest = function(options, request, callback) {
         info.logout.callbackUrl = options.callbackUrl;
         info.logout.response =
             '<samlp:LogoutResponse xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" ' +
-            'xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" ID="_' + crypto.randomBytes(21).toString('hex') +
+            'xmlns:samling="urn:oasis:names:tc:SAML:2.0:assertion" ID="_' + crypto.randomBytes(21).toString('hex') +
             '" Version="2.0" IssueInstant="' + new Date().toISOString() + '" Destination="' + info.logout.callbackUrl + '">' +
-            '<saml:Issuer>' + options.issuer + '</saml:Issuer>' +
+            '<samling:Issuer>' + options.issuer + '</samling:Issuer>' +
             '<samlp:Status><samlp:StatusCode Value="urn:oasis:names:tc:SAML:2.0:status:Success"/></samlp:Status>' +
             '</samlp:LogoutResponse>';
       }
@@ -100,14 +100,14 @@ exports.createAssertion = function(options) {
 
   doc.documentElement.setAttribute('ID', '_' + (options.uid || crypto.randomBytes(21).toString('hex')));
   if (options.issuer) {
-    var issuer = doc.documentElement.getElementsByTagName('saml:Issuer');
+    var issuer = doc.documentElement.getElementsByTagName('samling:Issuer');
     issuer[0].textContent = options.issuer;
   }
 
   var now = new Date().toISOString();
   doc.documentElement.setAttribute('IssueInstant', now);
-  var conditions = doc.documentElement.getElementsByTagName('saml:Conditions')[0];
-  var confirmationData = doc.documentElement.getElementsByTagName('saml:SubjectConfirmationData')[0];
+  var conditions = doc.documentElement.getElementsByTagName('samling:Conditions')[0];
+  var confirmationData = doc.documentElement.getElementsByTagName('samling:SubjectConfirmationData')[0];
 
   if (options.lifetimeInSeconds) {
     var expires = new Date(Date.now() + options.lifetimeInSeconds*1000).toISOString();
@@ -117,10 +117,10 @@ exports.createAssertion = function(options) {
   }
 
   if (options.audiences) {
-    var audienceRestrictionsElement = doc.createElementNS(ASSERTION_NS, 'saml:AudienceRestriction');
+    var audienceRestrictionsElement = doc.createElementNS(ASSERTION_NS, 'samling:AudienceRestriction');
     var audiences = options.audiences instanceof Array ? options.audiences : [options.audiences];
     audiences.forEach(function (audience) {
-      var element = doc.createElementNS(ASSERTION_NS, 'saml:Audience');
+      var element = doc.createElementNS(ASSERTION_NS, 'samling:Audience');
       element.textContent = audience;
       audienceRestrictionsElement.appendChild(element);
     });
@@ -134,36 +134,36 @@ exports.createAssertion = function(options) {
     confirmationData.setAttribute('InResponseTo', options.inResponseTo);
 
   if (options.attributes) {
-    var statement = doc.createElementNS(ASSERTION_NS, 'saml:AttributeStatement');
+    var statement = doc.createElementNS(ASSERTION_NS, 'samling:AttributeStatement');
     statement.setAttribute('xmlns:xs', 'http://www.w3.org/2001/XMLSchema');
     statement.setAttribute('xmlns:xsi', 'http://www.w3.org/2001/XMLSchema-instance');
     Object.keys(options.attributes).forEach(function(prop) {
       if(typeof options.attributes[prop] === 'undefined') return;
-      var attributeElement = doc.createElementNS(ASSERTION_NS, 'saml:Attribute');
+      var attributeElement = doc.createElementNS(ASSERTION_NS, 'samling:Attribute');
       attributeElement.setAttribute('Name', prop);
       var values = options.attributes[prop] instanceof Array ? options.attributes[prop] : [options.attributes[prop]];
       values.forEach(function (value) {
-        var valueElement = doc.createElementNS(ASSERTION_NS, 'saml:AttributeValue');
+        var valueElement = doc.createElementNS(ASSERTION_NS, 'samling:AttributeValue');
         valueElement.setAttribute('xsi:type', 'xs:anyType');
         valueElement.textContent = value;
         attributeElement.appendChild(valueElement);
       });
 
       if (values && values.length > 0) {
-        // saml:Attribute must have at least one saml:AttributeValue
+        // samling:Attribute must have at least one samling:AttributeValue
         statement.appendChild(attributeElement);
       }
     });
     doc.documentElement.appendChild(statement);
   }
 
-  doc.getElementsByTagName('saml:AuthnStatement')[0].setAttribute('AuthnInstant', now);
+  doc.getElementsByTagName('samling:AuthnStatement')[0].setAttribute('AuthnInstant', now);
 
   if (options.sessionExpiration) {
-    doc.getElementsByTagName('saml:AuthnStatement')[0].setAttribute('SessionNotOnOrAfter', options.sessionExpiration);
+    doc.getElementsByTagName('samling:AuthnStatement')[0].setAttribute('SessionNotOnOrAfter', options.sessionExpiration);
   }
   if (options.sessionIndex) {
-    doc.getElementsByTagName('saml:AuthnStatement')[0].setAttribute('SessionIndex', options.sessionIndex);
+    doc.getElementsByTagName('samling:AuthnStatement')[0].setAttribute('SessionIndex', options.sessionIndex);
   }
 
   var nameID = doc.documentElement.getElementsByTagNameNS(ASSERTION_NS, 'NameID')[0];
@@ -177,7 +177,7 @@ exports.createAssertion = function(options) {
   }
 
   if( options.authnContextClassRef ) {
-    var authnCtxClassRef = doc.getElementsByTagName('saml:AuthnContextClassRef')[0];
+    var authnCtxClassRef = doc.getElementsByTagName('samling:AuthnContextClassRef')[0];
     authnCtxClassRef.textContent = options.authnContextClassRef;
   }
 
@@ -205,7 +205,7 @@ exports.signDocument = function(token, reference, options) {
 }
 
 exports.createResponse = function(options) {
-  var response = '<samlp:Response xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" Version="2.0"';
+  var response = '<samlp:Response xmlns:samlp="urn:oasis:names:tc:SAML:2.0:protocol" xmlns:samling="urn:oasis:names:tc:SAML:2.0:assertion" Version="2.0"';
   response += ' ID="_' + crypto.randomBytes(21).toString('hex') + '"';
   response += ' IssueInstant="' + options.instant + '"';
   if (options.inResponseTo) {
@@ -214,7 +214,7 @@ exports.createResponse = function(options) {
   if (options.destination) {
     response += ' Destination="' + options.destination + '"';
   }
-  response += '><saml:Issuer>' + options.issuer + '</saml:Issuer>';
+  response += '><samling:Issuer>' + options.issuer + '</samling:Issuer>';
   response += '<samlp:Status><samlp:StatusCode Value="' + options.samlStatusCode + '"/>';
   if (options.samlStatusMessage) {
     response += '<samlp:StatusMessage>' + options.samlStatusMessage + '</samlp:StatusMessage>';

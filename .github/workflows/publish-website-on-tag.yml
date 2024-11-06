@@ -7,7 +7,7 @@ on:
 env:
   static-app-artefact-name: static-app-files
   nodejs-version: '20.10'
-  base-folder: src/saml
+  base-folder: src/samling
   dist-folder: dist
 concurrency:
   group: deploy-github-pages-${{ github.workflow }}

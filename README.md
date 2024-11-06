@@ -1,4 +1,4 @@
-<div align="center"><img src="/src/saml/images/logos-scorpion.svg" height="128" /></div>
+<div align="center"><img src="/src/samling/images/logos-scorpion.svg" height="128" /></div>
 
 Samling
 ===
