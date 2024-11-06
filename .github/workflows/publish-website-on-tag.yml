@@ -1,4 +1,4 @@
-name: Deploy Azure Environment Production
+name: Deploy App to Github pages
 run-name: 'Deploy to Githubpages ${{ github.ref_name }} by @${{ github.actor }}'
 on:
   push:
@@ -55,6 +55,9 @@ jobs:
     environment: # this sets the github environment name to retrieve the variable values
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
+    permissions: #permissions for GITHUB_TOKEN to publish artefacts to github pages
+      pages: write
+      id-token: write
     needs: check_requirements
     steps:
       - name: Checkout code
