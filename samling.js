@@ -1,12 +1,11 @@
-var crypto = require('crypto');
-var fs = require('fs');
+const fs = require('fs');
 window.CLIPBOARDJS = require('clipboard-js');
 window.SAML = require('./saml');
 const COOKIE_NAME = 'samling';
-var meta = fs.readFileSync('./public/metadata.xml.tpl').toString("utf8");
-var hostingUrl = fs.readFileSync('./hostingUrl.txt').toString("utf8");
+const meta = fs.readFileSync('./metadata.xml.tpl').toString("utf8");
+const hostingUrl = fs.readFileSync('./hostingUrl.txt').toString("utf8");
 
-var queryParams = {};
+const queryParams = {};
 
 function deleteCookie() {
   document.cookie = COOKIE_NAME + '=' + ';path=/;expires=' + (new Date(1));
@@ -20,16 +19,16 @@ function logout() {
   }
 
   deleteCookie();
-  var response = $('#samlResponse').val();
-  var callbackUrl = $('#callbackUrl').val();
+  const response = $('#samlResponse').val();
+  const callbackUrl = $('#callbackUrl').val();
   if (response && callbackUrl) {
-    var options = {
+    const options = {
       key: $('#signatureKey').val().trim(),
       cert: $('#signatureCert').val().trim()
     };
-    var samlResponse = window.SAML.signDocument(response, "//*[local-name(.)='LogoutResponse']", options);
+    const samlResponse = window.SAML.signDocument(response, "//*[local-name(.)='LogoutResponse']", options);
     $('#samlResponse').val(btoa(samlResponse.getSignedXml()));
-    var form = $('#samlResponseForm')[0];
+    const form = $('#samlResponseForm')[0];
     form.action = callbackUrl;
     form.submit();
   } else {
@@ -74,8 +73,8 @@ function handleRequest(request, relayState) {
 }
 
 function _getSessionExpiration(format) {
-  var sessionDuration = $('#sessionDuration').val().trim();
-    if (sessionDuration.length === 0) {
+  const sessionDuration = $('#sessionDuration').val().trim();
+  if (sessionDuration.length === 0) {
       $('#sessionDurationControl').addClass('has-error');
       !error && $('#sessionDuration').focus();
       error = true;
@@ -96,28 +95,28 @@ $(function() {
   $('[data-toggle="tooltip"]').tooltip();
   $('[data-toggle="popover"]').popover();
 
-  var cert = localStorage.getItem('certVal') || fs.readFileSync('./cert.pem').toString("utf8");
+  const cert = localStorage.getItem('certVal') || fs.readFileSync('./cert.pem').toString("utf8");
   $('#signatureCert').val(cert);
   $('#signatureKey').val(localStorage.getItem('privateKeyVal') || fs.readFileSync('./key.pem').toString("utf8"));
   _updateMetadata(cert);
 
-  var params = location.search.split('?');
+  const params = location.search.split('?');
   if (params.length > 1) {
-    var parts = params[1].split('&');
+    const parts = params[1].split('&');
     parts.forEach(function(part) {
-      var keyval = part.split('=');
+      const keyval = part.split('=');
       queryParams[keyval[0]] = keyval[1];
     });
   }
 
-  var userControl = $('#signedInUser');
-  var cookies = document.cookie.split(';');
+  const userControl = $('#signedInUser');
+  const cookies = document.cookie.split(';');
   cookies.forEach(function(cook) {
-    var parts = cook.split('=');
+    const parts = cook.split('=');
     if (parts[0].trim() === COOKIE_NAME) {
       try {
-        var value = atob(parts[1].trim());
-        var data = JSON.parse(value);
+        const value = atob(parts[1].trim());
+        const data = JSON.parse(value);
         userControl.text('Hello ' + data.nameIdentifier);
         $('#signedInAt').text(data.signedInAt);
         $('#nameIdentifier').val(data.nameIdentifier);
@@ -155,15 +154,15 @@ $(function() {
   });
 
   $('#generateKeyAndCert').click(function() {
-    var pki = window.forge.pki;
-    var keypair = pki.rsa.generateKeyPair({bits: 1024});
-    var cert = pki.createCertificate();
+    const pki = window.forge.pki;
+    const keypair = pki.rsa.generateKeyPair({bits: 1024});
+    const cert = pki.createCertificate();
     cert.publicKey = keypair.publicKey;
     cert.serialNumber = '01';
     cert.validity.notBefore = new Date();
     cert.validity.notAfter = new Date();
     cert.validity.notAfter.setFullYear(cert.validity.notBefore.getFullYear() + 1);
-    var attrs = [{
+    const attrs = [{
       name: 'commonName',
       value: 'capriza.com'
     }, {
@@ -222,14 +221,14 @@ $(function() {
     // self-sign certificate
     cert.sign(keypair.privateKey);
     // convert to PEM
-    var certVal = pki.certificateToPem(cert);
-    var privateKeyVal = pki.privateKeyToPem(keypair.privateKey);
+    const certVal = pki.certificateToPem(cert);
+    const privateKeyVal = pki.privateKeyToPem(keypair.privateKey);
     $('#signatureCert').val(certVal);
     $('#signatureKey').val(privateKeyVal);
   });
 
   $('#saveKeyAndCert').click(function() {
-    var cert = $('#signatureCert').val().trim();
+    const cert = $('#signatureCert').val().trim();
     localStorage.setItem('certVal', cert);
     localStorage.setItem('privateKeyVal', $('#signatureKey').val().trim());
     _updateMetadata(cert);
@@ -241,7 +240,7 @@ $(function() {
     $('#signatureKeyControl').removeClass('has-error');
     $('#signatureCertControl').removeClass('has-error');
 
-    var error = false;
+    let error = false;
     if ($('#nameIdentifier').val().trim().length === 0) {
       $('#nameIdentifierControl').addClass('has-error');
       !error && $('#nameIdentifier').focus();
@@ -270,15 +269,15 @@ $(function() {
       return;
     }
 
-    var attributes = undefined;
-    var attributesStr = $('#samlAttributes').val().trim();
+    let attributes = undefined;
+    const attributesStr = $('#samlAttributes').val().trim();
     if (attributesStr.length > 0) {
       attributes = {};
       attributesStr.split('\n').forEach(function(line) {
         var line = line.split('=');
-        var name = line.shift().trim();
+        const name = line.shift().trim();
         if (name.length > 0) {
-          var value = line.join('=').trim();
+          const value = line.join('=').trim();
           if (attributes[name]) {
             attributes[name].push(value);
           } else {
@@ -288,7 +287,7 @@ $(function() {
       });
     }
 
-    var options = {
+    const options = {
       key: $('#signatureKey').val().trim(),
       cert: $('#signatureCert').val().trim(),
       issuer: $('#issuer').val().trim(),
@@ -303,9 +302,9 @@ $(function() {
       lifetimeInSeconds: $('#lifetimeInSeconds').val().trim(),
       attributes: attributes
     };
-    var assertion = window.SAML.createAssertion(options);
-    var callbackUrl = $('#callbackUrl').val().trim();
-    var response = window.SAML.createResponse({
+    const assertion = window.SAML.createAssertion(options);
+    const callbackUrl = $('#callbackUrl').val().trim();
+    const response = window.SAML.createResponse({
       instant: new Date().toISOString().trim(),
       issuer: $('#issuer').val().trim(),
       inResponseTo: $('#inResponseTo').val().trim(),
@@ -315,7 +314,7 @@ $(function() {
       samlStatusMessage: $('#samlStatusMessage').val().trim(),
       signResponse: $('#signResponse').is(":checked") ? options : undefined,
     });
-    
+
     $('#samlResponse').val(response);
     $('#callbackUrlReadOnly').val(callbackUrl);
     $('#navbarSamling a[href="#samlResponseTab"]').tab('show')
@@ -327,9 +326,9 @@ $(function() {
     $('#sessionDurationControl').removeClass('has-error');
     $('#callbackUrlControl').removeClass('has-error');
 
-    var error = false;
+    let error = false;
 
-    var samlResponse = $('#samlResponse').val().trim();
+    const samlResponse = $('#samlResponse').val().trim();
     if (samlResponse.length === 0) {
       $('#samlResponseControl').addClass('has-error');
       !error && $('#samlResponse').focus();
@@ -337,7 +336,7 @@ $(function() {
     }
     $('#samlResponse').val(btoa(samlResponse));
 
-    var callbackUrl = $('#callbackUrl').val().trim();
+    const callbackUrl = $('#callbackUrl').val().trim();
     if (callbackUrl.length === 0) {
       $('#callbackUrlControl').addClass('has-error');
       !error && $('#callbackUrl').focus();
@@ -349,7 +348,7 @@ $(function() {
     }
 
     // write the "login" cookie
-    var cookieData = {
+    const cookieData = {
       signedInAt: new Date().toUTCString(),
       nameIdentifier: $('#nameIdentifier').val().trim(),
       callbackUrl: $('#callbackUrl').val().trim(),
@@ -358,11 +357,11 @@ $(function() {
       nameIdentifierFormat: $('#nameIdentifierFormat').val().trim(),
       attributes: $('#samlAttributes').val().trim()
     };
-    var cookieValue = btoa(JSON.stringify(cookieData));
+    const cookieValue = btoa(JSON.stringify(cookieData));
     deleteCookie();
     document.cookie = COOKIE_NAME + '=' + cookieValue + ';path=/;expires=' + _getSessionExpiration("UTC");
 
-    var form = $('#samlResponseForm')[0];
+    const form = $('#samlResponseForm')[0];
     form.action = callbackUrl;
     form.submit();
   });

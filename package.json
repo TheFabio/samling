@@ -21,15 +21,15 @@
     "testing"
   ],
   "devDependencies": {
-    "bootstrap": "3.3.6",
+    "bootstrap": "3.4.1",
     "brfs": "1.4.3",
     "browserify": "13.0.1",
     "clipboard-js": "^0.2.0",
-    "http-server": "^0.11.1",
+    "http-server": "^14.1.1",
     "jquery": "2.2.4",
     "node-forge": "0.6.40",
     "xml-crypto": "1.4.0",
-    "xmldom": "0.1.22"
+    "xmldom": "^0.6.0"
   },
   "main": "samling.js",
   "scripts": {
@@ -38,8 +38,9 @@
     "jquery": "cp -r node_modules/jquery/dist/* public/js/",
     "forge": "cd node_modules/node-forge && npm install && npm run bundle && cp js/forge.bundle.js ../../public",
     "browser": "browserify -g brfs samling.js | sed \"s/require[(]'node-forge'[)]/window.forge/g\" > public/bundle.js",
-    "build": "npm run prepare && npm run bootstrap && npm run jquery && npm run forge && npm run browser",
-    "serve": "http-server -p 8888 ."
+    "build": "npm run prepare && npm run bootstrap && npm run jquery && npm run forge && npm run browser && npm run adjust-url",
+    "adjust-url": "node base-file-url-replacement",
+    "serve": "http-server -p 8888 ./public -o samling.html"
   },
   "license": "MIT"
 }
