@@ -2,8 +2,8 @@ const fs = require('fs');
 window.CLIPBOARDJS = require('clipboard-js');
 window.SAML = require('./saml');
 const COOKIE_NAME = 'samling';
-const meta = fs.readFileSync('./metadata.xml.tpl').toString("utf8");
-const hostingUrl = fs.readFileSync('./hostingUrl.txt').toString("utf8");
+var meta = fs.readFileSync('src/saml/metadata.xml.tpl', 'utf8');
+var hostingUrl = fs.readFileSync('./.tmp/hostingUrl.txt','utf8');
 
 const queryParams = {};
 
@@ -59,7 +59,7 @@ function handleRequest(request, relayState) {
     $('#issuer').val(info.login.destination);
     $('#audience').val(info.login.issuer);
     $('#inResponseTo').val(info.login.id);
-    
+
     // auto-login if:
     // 1. ForceAuthn="true" was not specified on the authentication request
     // 2. we also have the username already populated because of the samling cookie
@@ -95,9 +95,9 @@ $(function() {
   $('[data-toggle="tooltip"]').tooltip();
   $('[data-toggle="popover"]').popover();
 
-  const cert = localStorage.getItem('certVal') || fs.readFileSync('./cert.pem').toString("utf8");
+  const cert = localStorage.getItem('certVal') || fs.readFileSync('./src/saml/cert.pem').toString("utf8");
   $('#signatureCert').val(cert);
-  $('#signatureKey').val(localStorage.getItem('privateKeyVal') || fs.readFileSync('./key.pem').toString("utf8"));
+  $('#signatureKey').val(localStorage.getItem('privateKeyVal') || fs.readFileSync('./src/saml/key.pem').toString("utf8"));
   _updateMetadata(cert);
 
   const params = location.search.split('?');
