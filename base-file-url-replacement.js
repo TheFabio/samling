@@ -1,15 +1,14 @@
 const fs = require('fs');
 
-fs.readFile("hostingUrl.txt", 'utf8', (err1, hostingUrl) => {
-    if (err1) return console.log(err1);
+const hostingUrl = fs.readFileSync("hostingUrl.txt", 'utf8');
+const baseSamlingHtml = fs.readFileSync("samling.html", 'utf8');
+const newSamlingHtml = baseSamlingHtml.replace(/_HOSTING_URL_/g, hostingUrl);
 
-    fs.readFile("samling.html", 'utf8', (err2, samlingHtml) => {
-        if (err2) return console.log(err2);
+fs.writeFileSync("public/samling.html", newSamlingHtml, 'utf8')
 
-        const newSamlingHtml = samlingHtml.replace(/SAMLING_URL/g, hostingUrl);
+const meta = fs.readFileSync('./metadata.xml.tpl', 'utf8');
+const cert = fs.readFileSync('cert.pem').toString('utf8')
+const flatCert = cert.replace("-----BEGIN CERTIFICATE-----", "").replace("-----END CERTIFICATE-----", "").replace(/[\s]/g, "");
+const metadataXml = meta.replace("_CERTIFICATE_", flatCert).replace(/_HOSTING_URL_/g, hostingUrl);
 
-        fs.writeFile("public/samling.html", newSamlingHtml, 'utf8', function (err) {
-            if (err) return console.log(err);
-        });
-    })
-});
+fs.writeFileSync("./public/metadata.xml", metadataXml, 'utf8');

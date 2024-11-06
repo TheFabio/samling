@@ -21,7 +21,7 @@
     "testing"
   ],
   "devDependencies": {
-    "bootstrap": "3.3.6",
+    "bootstrap": "3.4.1",
     "brfs": "1.4.3",
     "browserify": "13.0.1",
     "clipboard-js": "^0.2.0",

@@ -1,4 +1,4 @@
-<html>
+<html lang="en">
 <head>
   <base href="/">
   <title>Samling</title>
@@ -17,39 +17,37 @@
 </head>
 
 <body>
+  <nav class="navbar navbar-static-top samling-navbar">
+    <div class="container-fluid">
+      <span class="navbar-header ">
+        <img class="samling-brand-logo" src="images/logos-scorpion.svg" >
+        <span class="samling-brand">SAMLING <span class="samling-brand-subtitle">Serverless SAML IDP</span></span>
+      </span>
+    </div>
+  </nav>
 
-
-<nav class="navbar navbar-static-top samling-navbar">
-  <div class="container-fluid">
-    <span class="navbar-header ">
-      <img class="samling-brand-logo" src="images/logos-scorpion.svg" >
-      <span class="samling-brand">SAMLING <span class="samling-brand-subtitle">Serverless SAML IDP</span></span>
-    </span>
-  </div>
-</nav>
-
-<nav class="navbar navbar-left">
-  <div class="container-fluid">
-    <ul class="nav nav-pills nav-stacked samling-nav-pills" id="navbarSamling" role="tablist">
-      <li role="presentation" class="active">
-        <a class="samling-nav-item" href="#samlPropertiesTab" aria-controls="samlPropertiesTab" role="tab"
-           data-toggle="pill">SAML Response Properties</a></li>
-      <li role="presentation" class="">
-        <a class="samling-nav-item" href="#samlResponseTab" aria-controls="samlResponseTab" role="tab"
-           data-toggle="pill">SAML
-          Response</a></li>
-      <li role="presentation" class="">
-        <a class="samling-nav-item" href="#userDetailsTab" aria-controls="userDetailsTab" role="tab"
-           data-toggle="pill">User Details</a></li>
-      <li role="presentation" class="">
-        <a class="samling-nav-item" href="#showMetadata" aria-controls="showMetadata" role="tab"
-           data-toggle="pill">IdP Metadata</a></li>
-      <li role="presentation" class="">
-        <a class="samling-nav-item" href="#whatsThisTab" aria-controls="whatsThisTab" role="tab"
-           data-toggle="pill">What is this?</a></li>
-    </ul>
-  </div>
-</nav>
+  <nav class="navbar navbar-left">
+    <div class="container-fluid">
+      <ul class="nav nav-pills nav-stacked samling-nav-pills" id="navbarSamling" role="tablist">
+        <li role="presentation" class="active">
+          <a class="samling-nav-item" href="#samlPropertiesTab" aria-controls="samlPropertiesTab" role="tab"
+             data-toggle="pill">SAML Response Properties</a></li>
+        <li role="presentation" class="">
+          <a class="samling-nav-item" href="#samlResponseTab" aria-controls="samlResponseTab" role="tab"
+             data-toggle="pill">SAML
+            Response</a></li>
+        <li role="presentation" class="">
+          <a class="samling-nav-item" href="#userDetailsTab" aria-controls="userDetailsTab" role="tab"
+             data-toggle="pill">User Details</a></li>
+        <li role="presentation" class="">
+          <a class="samling-nav-item" href="#showMetadata" aria-controls="showMetadata" role="tab"
+             data-toggle="pill">IdP Metadata</a></li>
+        <li role="presentation" class="">
+          <a class="samling-nav-item" href="#whatsThisTab" aria-controls="whatsThisTab" role="tab"
+             data-toggle="pill">What is this?</a></li>
+      </ul>
+    </div>
+  </nav>
 
   <div class="col-md-7 col-md-offset-1">
     <!-- Tab panes -->
@@ -279,8 +277,8 @@
               <pre id="idpMetadata" style="text-overflow: auto"></pre>
             </p>
             <p>
-              <a class="btn btn-primary pull-right" href="#" role="button" id="copyMetadata" 
-              data-toggle="tooltip" title="Copied" data-trigger="manual" data-placement="top">Copy Metadata</a>
+              <button class="btn btn-primary pull-right" href="#" id="copyMetadata"
+              data-toggle="tooltip" title="Copied" data-trigger="manual" data-placement="top">Copy Metadata</button>
             </p>
           </div>
         </div>
@@ -317,7 +315,5 @@
       </div>
     </div>
   </div>
-</div>
-
 </body>
 </html>
